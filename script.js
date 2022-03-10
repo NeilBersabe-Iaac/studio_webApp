@@ -10,7 +10,7 @@ import {GUI} from 'https://cdn.jsdelivr.net/npm/three@0.124.0/examples/jsm/libs/
 
 //web_app studio project
 
-const definitionName = "web_app_main.gh";
+const definitionName = "web_app_main_Neil.gh";
 
 // Set up sliders
 const radius_slider = document.getElementById("X_X");
@@ -32,7 +32,7 @@ rhino3dm().then(async (m) => {
   //RhinoCompute.url = getAuth( 'RHINO_COMPUTE_URL' ) // RhinoCompute server url. Use http://localhost:8081 if debugging locally.
   //RhinoCompute.apiKey = getAuth( 'RHINO_COMPUTE_KEY' )  // RhinoCompute server api key. Leave blank if debugging locally.
 
-  RhinoCompute.url = "http://localhost:8081/"; //if debugging locally.
+  // RhinoCompute.url = "http://localhost:8081/"; //if debugging locally.
 
   // load a grasshopper file!
 
@@ -157,13 +157,18 @@ const mouse = new THREE.Vector2()
 
 function init() {
   // create a scene and a camera
-
+  
   THREE.Object3D.DefaultUp = new THREE.Vector3(0, 0, 1)
 
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(1, 1, 1);
 
+  // scene.background = new THREE.Color(1, 1, 1);
+  let material, cubeMap;
+  cubeMap = new THREE.CubeTextureLoader()
+    .setPath("./assets/")
+    .load(["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"]);
+  scene.background = cubeMap;
 
 
   camera = new THREE.PerspectiveCamera(
@@ -179,18 +184,20 @@ function init() {
   
   //camera.position.z = -30;
 
-  container = document.getElementById('main_Container')
-  var contWidth = container.offsetWidth;
-  var contHeight = container.offsetHeight
+  // container = document.getElementById('main_Container')
+  // var contWidth = container.offsetWidth;
+  // var contHeight = container.offsetHeight
 
   // create the renderer and add it to the html
-  renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth/1.50, window.innerHeight/1.15);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
   // add some controls to orbit the camera
   controls = new OrbitControls(camera, renderer.domElement);
-  
+  controls.update();
+
   // add a directional light
   const directionalLight = new THREE.DirectionalLight(0xffffff);
   directionalLight.position.set( 20, 0, 100 )
